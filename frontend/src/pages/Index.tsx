@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/ui/Logo';
+import DigitalPayment from '../components/DigitalPayment';
 import { 
   Smartphone, 
   Wifi, 
@@ -16,10 +17,81 @@ import {
   Twitter,
   Instagram,
   Linkedin,
+  GraduationCap,
+  Shield,
 } from 'lucide-react';
 
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+  const services = [
+    {
+      Icon: Smartphone,
+      title: "Airtime & Data",
+      description: "Instant airtime and data bundle purchases for all networks",
+      features: [
+        "All Networks",
+        "Instant delivery",
+        "Best Rates"
+      ],
+      bgColor: "bg-blue-700",
+    },
+    {
+      Icon: Zap,
+      title: "Electric Bills",
+      description: "Pay your bills from all major distribution companies.",
+      features: [
+        "All DISCOs",
+        "Instant Payment",
+        "Reciept Available"
+      ],
+      bgColor: "bg-yellow-500",
+    },
+    {
+      Icon: Monitor,
+      title: "Cable TV",
+      description: "Subscribe to  DSTV, GOTV, Startimes and other cable services.",
+      features: [
+        "All Provider",
+        "Auto-Renewal",
+        "Quick Setup"
+      ],
+      bgColor: "bg-purple-700",
+    },
+    {
+      Icon:Wifi,
+      title: "Internet Bills",
+      description: "Pay For your Internet subscriptions from major ISPs",
+      features: [
+        "Major ISPs",
+        "Fast Processing",
+        "Reliable Service"
+      ],bgColor: "bg-blue-400",
+    },
+    {
+      Icon: GraduationCap,
+      title:"Education",
+      description: "Pay for WEAC,JAMB,NECO and other educational services",
+      features: [
+        "All Boards",
+        "Secure Payment",
+        "Quick Processing"
+      ],
+      bgColor: "bg-green-500",
+    },
+    {
+    Icon: Shield,
+    title:"Secure & Fast",
+    description:"Bank-level security with instant transaction processing",
+    features:[
+      "256-bit SSL",
+      "PCL ComPliant",
+      "Instant Processing"
+    ],
+    bgColor: "bg-red-500",
+    },
+  ];
+  
 
   // Smooth scrolling for anchor links
   useEffect(() => {
@@ -212,6 +284,25 @@ const Index = () => {
             </div>
           </div>
         </div>
+      </section>
+
+      {/*Digital Payment */}
+      <section className="py-20 bg-white" id="services">
+     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <h1 className="text-3xl font-bold pb-2 text-center">All Your Digital Payment in One Place</h1>
+      <p className="text-center text-slate-900">From Mobile top to utility bills, we've got you covered with fast, secure, and reliable Payment solutions.</p>
+     </div>
+    <div className="grid gap-3 md:grid-cols-3 sm:grid-cols-2 mt-10">
+      {services.map((service,index) => (
+        <DigitalPayment
+        key={index}
+        Icon={service.Icon}
+        title={service.title}
+        description={service.description}
+        features={service.features}
+        bgColor={service.bgColor}/>
+      ))}
+    </div>
       </section>
 
       {/* Footer */}
