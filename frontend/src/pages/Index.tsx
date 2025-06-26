@@ -3,7 +3,8 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/ui/Logo';
-import DigitalPayment from '../components/DigitalPayment';
+import WhyChooseUs from '../components/whychooseus';
+import Testimonial from '../components/Testimonial';
 import { 
   Smartphone, 
   Wifi, 
@@ -286,24 +287,11 @@ const Index = () => {
         </div>
       </section>
 
-      {/*Digital Payment */}
-      <section className="py-20 bg-white" id="services">
-     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-     <h1 className="text-3xl font-bold pb-2 text-center">All Your Digital Payment in One Place</h1>
-      <p className="text-center text-slate-900">From Mobile top to utility bills, we've got you covered with fast, secure, and reliable Payment solutions.</p>
-     </div>
-    <div className="grid gap-3 md:grid-cols-3 sm:grid-cols-2 mt-10">
-      {services.map((service,index) => (
-        <DigitalPayment
-        key={index}
-        Icon={service.Icon}
-        title={service.title}
-        description={service.description}
-        features={service.features}
-        bgColor={service.bgColor}/>
-      ))}
-    </div>
-      </section>
+
+    <WhyChooseUs />
+    <Testimonial />
+  
+
 
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-300">
