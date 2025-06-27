@@ -55,7 +55,7 @@ const Testimonial: React.FC = () => {
                 </li>
               ))}
             </ul>
- 1         </div>
+        </div>
 
           {/* Testimonial */}
           <div className="bg-gradient-to-br from-blue-700 to-blue-600 text-white p-6 sm:p-8 rounded-3xl shadow-lg">
