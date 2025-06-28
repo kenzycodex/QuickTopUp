@@ -6,6 +6,7 @@ import Logo from '@/components/ui/Logo';
 import DigitalPayment from '../components/DigitalPayment';
 import WhyChooseUs from '../components/whychooseus';
 import Testimonial from '../components/Testimonial';
+import Pricing from '../components/Pricing';
 import { 
   Smartphone, 
   Wifi, 
@@ -94,6 +95,45 @@ const Index = () => {
     },
   ];
   
+  const price=[{
+    title:"Basic",
+    subTitle:"Free",
+    description:"Perfect for getting started",
+    features:[
+      "Airtime & Data purchases",
+      "Basic bill payments",
+      "Standard Support",
+      "Transaction history",
+      "Mobile app access"
+    ],
+  },
+  {
+    title:"Premium",
+    subTitle:"₦500/Month",
+    description:"Best for regular users",
+    features:[
+      "All Basic feature",
+      "Priority Processing",
+      "Advance analytics",
+      "Api access",
+      "Bulk transactios",
+      "Customs notification"
+    ],
+  
+  },
+  {
+    title:"Business",
+    subTitle:"Custom",
+    description:"For businesses and enterprises",
+    features:[
+      "All Premium features",
+      "White-label solution",
+      "Dedication account manager",
+      "Custom integrations",
+      "Advanced reporting",
+      "Muti-user management"
+    ],
+  },]
 
   // Smooth scrolling for anchor links
   useEffect(() => {
@@ -309,9 +349,30 @@ const Index = () => {
     <WhyChooseUs />
     <Testimonial />
   
+    {/*Simple,Transparent Pricing */}
+    <section className="py-20 mx-12" id="pricing">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-3xl font-bold text-center">Simple, Transparent Pricing</h1>
+        <p className="text-center pt-3 font-normal">No hidden fees. Pay only for what you use.</p>
+      </div>
+      
+      <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-2 mt-10">
+        {price.map((item, index) => (
+          <Pricing
+            key={index}
+            title={item.title}
+            subTitle={item.subTitle}
+            description={item.description}
+            features={item.features}
+            btnColor={index === 1 ? "bg-blue-600" : "bg-black"}
+            label={index === 1 ? "Most Popular" : undefined}
+            border={index === 1 ? "border-4 border-blue-600" : "border"}
+          />
+        ))}
+      </div>
+    </section>
 
-
-      {/* Footer */}
+   {/* Footer */}
       <footer className="bg-slate-900 text-slate-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid md:grid-cols-4 gap-8">

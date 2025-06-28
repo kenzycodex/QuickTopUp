@@ -28,7 +28,7 @@ const features = [
 
 const WhyChooseUs: React.FC = () => {
   return (
-    <div className="bg-white text-gray-800">
+    <div className="text-gray-800">
       {/* Why Choose Us Section */}
       <section className=" text-center p-16">
         <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Why Choose QuickTopUp?</h2>
