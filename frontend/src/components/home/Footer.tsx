@@ -185,7 +185,7 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-slate-700/50">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-center sm:text-left">
             <p className="text-slate-400 text-sm">
-              © 2024 QuickTopUp. All rights reserved.
+              © 2025 QuickTopUp. All rights reserved.
             </p>
             <div className="flex items-center justify-center sm:justify-end gap-2 text-sm">
               <span className="text-slate-400">Made with</span>
