@@ -23,7 +23,16 @@ const Index = () => {
       if (target.hash) {
         e.preventDefault();
         const element = document.querySelector(target.hash);
-        element?.scrollIntoView({ behavior: 'smooth' });
+        if (element) {
+          // Account for fixed header height
+          const headerHeight = 64; // 16 * 4 = 64px (h-16)
+          const elementPosition = (element as HTMLElement).offsetTop - headerHeight - 20;
+          
+          window.scrollTo({
+            top: elementPosition,
+            behavior: 'smooth'
+          });
+        }
         setIsMenuOpen(false);
       }
     };
@@ -39,14 +48,17 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <Header />
-      <Hero />
-      <Services />
-      <Features />
-      <WhyChooseUs />
-      <Pricing />
-      <Newsletter />
-      <Contact />
-      <Footer />
+      {/* Add proper spacing for fixed header */}
+      <div className="pt-12 sm:pt-6">
+        <Hero />
+        <Services />
+        <Features />
+        <WhyChooseUs />
+        <Pricing />
+        <Newsletter />
+        <Contact />
+        <Footer />
+      </div>
     </div>
   );
 };

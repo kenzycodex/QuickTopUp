@@ -83,27 +83,33 @@ const Hero = () => {
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-16 items-center min-h-screen py-12 sm:py-16 lg:py-20">
           {/* Left Content */}
           <div
-            className={`flex flex-col justify-center space-y-6 lg:space-y-8 transform transition-all duration-1000 ${
-              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-            }`}
+            className={`flex flex-col justify-center space-y-6 lg:space-y-8 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+              }`}
           >
             {/* Trust Badge */}
             <div className="flex justify-center lg:justify-start">
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-white/95 to-blue-50/95 backdrop-blur-sm border border-blue-200/50 text-blue-700 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group">
-                <div className="flex -space-x-0.5">
+              <div className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-white/90 to-blue-100/90 backdrop-blur-md border border-blue-200 shadow-md hover:shadow-xl transition-all duration-300 group hover:scale-105">
+
+                {/* Stars */}
+                <div className="flex items-center gap-[2px]">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400"
+                      className="h-4 w-4 fill-yellow-400 text-yellow-400 drop-shadow-sm"
                     />
                   ))}
                 </div>
-                <span className="text-sm font-semibold">
-                  Trusted by 50,000+ users
+
+                {/* Text */}
+                <span className="text-sm font-medium text-slate-800 tracking-tight">
+                  Trusted by <span className="font-semibold text-blue-700">50,000+</span> users
                 </span>
+
+                {/* Shield Icon */}
                 <Shield className="h-4 w-4 text-blue-600 group-hover:rotate-12 transition-transform" />
               </div>
             </div>
+
 
             {/* Main Heading */}
             <div className="space-y-4 text-center lg:text-left">
@@ -153,7 +159,7 @@ const Hero = () => {
                 return (
                   <div
                     key={service.name}
-                    className={`bg-gradient-to-br ${service.bgColor} p-4 sm:p-5 rounded-2xl text-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 cursor-pointer group border border-white/50`}
+                    className={`bg-gradient-to-br ${service.bgColor} p-3 sm:p-4 rounded-2xl text-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 cursor-pointer group border border-white/50`}
                     style={{ animationDelay: service.delay }}
                   >
                     <div className="flex items-center justify-center mb-3">
@@ -172,13 +178,12 @@ const Hero = () => {
 
           {/* Right Content - Hero Image & Service Cards */}
           <div
-            className={`relative space-y-4 sm:space-y-6 transform transition-all duration-1000 delay-300 ${
-              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-            }`}
+            className={`relative space-y-4 sm:space-y-6 transform transition-all duration-1000 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+              }`}
           >
             {/* Main Hero Image Container */}
             <div className="relative">
-              <div className="relative overflow-hidden rounded-3xl sm:rounded-[3rem] shadow-2xl bg-white">
+              <div className="relative overflow-hidden rounded-t-3xl sm:rounded-t-[3rem] shadow-2xl bg-white">
                 <div className="aspect-[6/5] sm:aspect-[4/4] lg:aspect-[6/5]">
                   <img
                     src="/home/hero-blue.png"
@@ -219,7 +224,7 @@ const Hero = () => {
             {/* Service Cards Below Image */}
             <div className="grid grid-cols-2 gap-3 sm:gap-4">
               {/* Airtime & Data Card */}
-              <div className="bg-gradient-to-br from-emerald-50 to-green-100 p-4 sm:p-5 rounded-2xl text-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group cursor-pointer border border-emerald-100">
+              <div className="bg-gradient-to-br from-emerald-50 to-green-100 rounded-tr-[3rem] rounded-bl-[3rem] p-4 sm:p-5 rounded-2xl text-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group cursor-pointer border border-emerald-100">
                 <div className="flex items-center justify-center mb-3">
                   <div className="bg-gradient-to-br from-emerald-500 to-green-600 p-2.5 rounded-xl group-hover:rotate-12 transition-transform duration-300">
                     <Smartphone className="h-6 w-6 text-white" />
@@ -234,7 +239,7 @@ const Hero = () => {
               </div>
 
               {/* Bills & Utilities Card */}
-              <div className="bg-gradient-to-br from-blue-50 to-cyan-100 p-4 sm:p-5 rounded-2xl text-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group cursor-pointer border border-blue-100">
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-100 rounded-tl-[3rem] rounded-br-[3rem] p-4 sm:p-5 rounded-2xl text-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group cursor-pointer border border-blue-100">
                 <div className="flex items-center justify-center mb-3">
                   <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-2.5 rounded-xl group-hover:rotate-12 transition-transform duration-300">
                     <Zap className="h-6 w-6 text-white" />

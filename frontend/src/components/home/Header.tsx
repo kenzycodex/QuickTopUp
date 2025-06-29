@@ -1,35 +1,70 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/ui/Logo';
 import { Menu, X } from 'lucide-react';
 
 const Header = () => {
-	const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const headerRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
-  // Handle scroll effect for header
+  // Handle scroll effects
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      const currentScrollY = window.scrollY;
+      
+      // Update scroll state for backdrop blur
+      setIsScrolled(currentScrollY > 10);
+      
+      // Header visibility logic - but ALWAYS visible when menu is open
+      if (isMenuOpen) {
+        setHeaderVisible(true);
+      } else {
+        if (currentScrollY < 50) {
+          // Always show header near top
+          setHeaderVisible(true);
+        } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          // Hide when scrolling down, but only if menu is closed
+          setHeaderVisible(false);
+        } else if (currentScrollY < lastScrollY) {
+          // Show when scrolling up
+          setHeaderVisible(true);
+        }
+      }
+      
+      setLastScrollY(currentScrollY);
+      
+      // Close mobile menu on significant scroll
+      if (isMenuOpen && Math.abs(currentScrollY - lastScrollY) > 30) {
+        setIsMenuOpen(false);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY, isMenuOpen]);
 
-  // Smooth scrolling for anchor links
+  // Enhanced smooth scrolling for anchor links
   useEffect(() => {
     const handleSmoothScroll = (e) => {
-      const target = e.target;
-      if (target.hash) {
+      const target = e.target.closest('a');
+      if (target && target.hash) {
         e.preventDefault();
         const element = document.querySelector(target.hash);
         if (element) {
-          element.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
+          const headerHeight = headerRef.current?.offsetHeight || 64;
+          const elementPosition = element.offsetTop - headerHeight - 20;
+          
+          window.scrollTo({
+            top: elementPosition,
+            behavior: 'smooth'
           });
+          
+          // Close mobile menu after navigation
           setIsMenuOpen(false);
         }
       }
@@ -43,28 +78,58 @@ const Header = () => {
     };
   }, []);
 
-  // Close mobile menu when clicking outside
+  // Handle click outside to close menu
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isMenuOpen && !event.target.closest('header')) {
+      if (isMenuOpen && 
+          mobileMenuRef.current && 
+          !mobileMenuRef.current.contains(event.target) &&
+          !event.target.closest('[data-mobile-menu-trigger]')) {
         setIsMenuOpen(false);
       }
     };
 
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, [isMenuOpen]);
-
-  // Prevent body scroll when menu is open
-  useEffect(() => {
     if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = '0px'; // Prevent layout shift
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
+  }, [isMenuOpen]);
+
+  // Handle escape key to close menu
+  useEffect(() => {
+    const handleEscapeKey = (event) => {
+      if (event.key === 'Escape' && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
     };
   }, [isMenuOpen]);
 
@@ -76,91 +141,149 @@ const Header = () => {
     { href: '#contact', label: 'Contact' },
   ];
 
+  const toggleMenu = () => {
+    // Always show header when trying to open menu
+    if (!isMenuOpen) {
+      setHeaderVisible(true);
+    }
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
-    <header className="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Logo />
+    <>
+      <header 
+        ref={headerRef}
+        className={`
+          fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out
+          ${isScrolled 
+            ? 'bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm' 
+            : 'bg-white/90 backdrop-blur-sm border-b border-slate-100'
+          }
+          ${headerVisible ? 'translate-y-0' : '-translate-y-full'}
+        `}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Logo />
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="text-slate-600 hover:text-primary-600 font-medium transition-colors"
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-
-          {/* Auth Buttons */}
-          <div className="hidden md:flex items-center gap-3">
-            <Link to="/login">
-              <Button variant="ghost" className="text-slate-700 hover:text-primary-600">
-                Sign In
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button className="bg-primary-500 hover:bg-primary-600 text-white px-6">
-                Get Started
-              </Button>
-            </Link>
-          </div>
-
-					{/* Mobile Menu Button */}
-					<Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden relative z-50 transition-all duration-300 hover:bg-blue-50"
-          >
-            <div className="relative w-6 h-6">
-              <Menu 
-                className={`absolute inset-0 w-6 h-6 transition-all duration-300 ${
-                  isMenuOpen ? 'opacity-0 rotate-180' : 'opacity-100 rotate-0'
-                }`} 
-              />
-              <X 
-                className={`absolute inset-0 w-6 h-6 transition-all duration-300 ${
-                  isMenuOpen ? 'opacity-100 rotate-0' : 'opacity-0 -rotate-180'
-                }`} 
-              />
-            </div>
-          </Button>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-slate-200">
-            <nav className="flex flex-col space-y-3">
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
               {navItems.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
-                  className="text-slate-600 hover:text-primary-600 font-medium transition-colors px-3 py-2"
+                  className="text-slate-600 hover:text-primary-600 font-medium transition-colors duration-200 relative group"
+                >
+                  {item.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-200 group-hover:w-full"></span>
+                </a>
+              ))}
+            </nav>
+
+            {/* Desktop Auth Buttons */}
+            <div className="hidden md:flex items-center gap-3">
+              <Link to="/login">
+                <Button variant="ghost" className="text-slate-700 hover:text-primary-600 transition-colors duration-200">
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/register">
+                <Button className="bg-primary-500 hover:bg-primary-600 text-white px-6 transition-all duration-200 hover:shadow-md">
+                  Get Started
+                </Button>
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              data-mobile-menu-trigger
+              onClick={toggleMenu}
+              className="md:hidden relative z-[60] p-2 rounded-lg transition-all duration-200 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={isMenuOpen}
+            >
+              <div className="relative w-6 h-6">
+                <Menu 
+                  className={`absolute inset-0 w-6 h-6 transition-all duration-300 transform ${
+                    isMenuOpen ? 'opacity-0 rotate-45 scale-75' : 'opacity-100 rotate-0 scale-100'
+                  }`} 
+                />
+                <X 
+                  className={`absolute inset-0 w-6 h-6 transition-all duration-300 transform ${
+                    isMenuOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-45 scale-75'
+                  }`} 
+                />
+              </div>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      <div 
+        className={`
+          md:hidden fixed inset-0 z-40 transition-all duration-300 ease-in-out
+          ${isMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'}
+        `}
+      >
+        {/* Backdrop */}
+        <div 
+          className={`
+            absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity duration-300
+            ${isMenuOpen ? 'opacity-100' : 'opacity-0'}
+          `}
+          onClick={() => setIsMenuOpen(false)}
+        />
+        
+        {/* Mobile Menu Panel */}
+        <div 
+          ref={mobileMenuRef}
+          className={`
+            absolute top-16 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-lg
+            transform transition-all duration-300 ease-out
+            ${isMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'}
+          `}
+        >
+          <nav className="px-4 py-3 max-h-[calc(100vh-4rem)] overflow-y-auto">
+            <div className="space-y-1">
+              {navItems.map((item, index) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className={`
+                    block px-4 py-3 text-slate-700 hover:text-primary-600 hover:bg-primary-50 
+                    font-medium transition-all duration-200 rounded-lg
+                    transform ${isMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'}
+                  `}
+                  style={{ 
+                    transitionDelay: isMenuOpen ? `${index * 50}ms` : '0ms' 
+                  }}
                 >
                   {item.label}
                 </a>
               ))}
-              <div className="flex flex-col gap-3 pt-3 border-t border-slate-200">
-                <Link to="/login">
-                  <Button variant="ghost" className="w-full justify-start">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link to="/register">
-                  <Button className="w-full bg-primary-500 hover:bg-primary-600">
-                    Get Started
-                  </Button>
-                </Link>
-              </div>
-            </nav>
-          </div>
-        )}
+            </div>
+            
+            {/* Mobile Auth Buttons */}
+            <div className="mt-4 pt-4 border-t border-slate-200 space-y-3">
+              <Link to="/login" className="block">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start text-left hover:bg-slate-100 transition-colors duration-200"
+                >
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/register" className="block">
+                <Button className="w-full bg-primary-500 hover:bg-primary-600 transition-all duration-200 hover:shadow-md">
+                  Get Started
+                </Button>
+              </Link>
+            </div>
+          </nav>
+        </div>
       </div>
-    </header>
+    </>
   );
 };
 
