@@ -1,4 +1,4 @@
-# QuickTopUp VTU Platform 🚀
+# QuickTopUp VTU Platform
 
 A simple, secure, and fast Virtual Top-Up (VTU) application for Nigerian users to recharge airtime, buy data bundles, and manage their mobile services efficiently.
 
